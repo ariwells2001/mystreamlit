@@ -3,14 +3,15 @@ import mysql.connector
 import pandas as pd
 import mysql.connector
 import seaborn as sns
-from influxdb import InfluxDBClient
+#from influxdb import InfluxDBClient
 import numpy as np
 from PIL import Image
 
 image = Image.open("ariwells-logo.jpg")
 st.sidebar.image(image,width = 200)
 
-databaseName = ["Select a Database","MySQL","InfluxDB-1.8"]
+#databaseName = ["Select a Database","MySQL","InfluxDB-1.8"]
+databaseName = ["Select a Database","MySQL"]
 st.sidebar.title("Database Access")
 databaseChoice = st.sidebar.selectbox("Database",databaseName)
 userID = ""
@@ -106,45 +107,45 @@ if databaseChoice == "MySQL":
 
 
 
-elif databaseChoice == "InfluxDB-1.8":
-    st.title("Access to InfluxDB-1.8")
-    userID = st.sidebar.text_input("User Name",value="iotuser")
-    userPassword = st.sidebar.text_input("Password",value="iot12345",type="password")
-    #selectedDB = st.text_input("Database",value="iot")
-    hostAddress = st.sidebar.text_input("Host",value='112.157.171.74')
-    port = st.sidebar.text_input("Port", value = "38086")
-    #dbName =st.text_input("Database",value="homeassistant")
-    connectOK=st.sidebar.button("Connect")
-    con = InfluxDBClient(host=hostAddress,port=port,username=userID,password=userPassword)
-    dbCategoryTemp = con.query("show databases")
-    temp = list(dbCategoryTemp.get_points())
-    #st.write(list(temp[2].values()))
-    #st.write(len(temp))
-    dummy = []
-    for i in range(len(temp)):
-        dummy.append(list(temp[i].values()))
-        #st.write(dummy)
-    dummy1 = np.array(dummy)
-    finalList = dummy1.flatten()
-    #dbCategory = pd.DataFrame(list(dbCategoryTemp))
-    #dbName = st.selectbox("Database", dbCategory)
-    dbName = st.selectbox("Database", finalList)
-    con.switch_database(dbName)
-    measureCategoryTemp = con.query("show measurements")
-    temp = list(measureCategoryTemp.get_points())
-    #st.write(list(temp[2].values()))
-    #st.write(len(temp))
-    dummy = []
-    for i in range(len(temp)):
-        dummy.append(list(temp[i].values()))
-        #st.write(dummy)
-    dummy1 = np.array(dummy)
-    finalList = dummy1.flatten()
-    measureName = st.selectbox("Measurements", finalList)
-    sensorValue = con.query('select time,entity_id,value from "{}" order by time desc limit 100'.format(measureName))
-    temp = list(sensorValue.get_points())
-    valueList = pd.DataFrame(temp)
-    st.text_area("Query Result",pd.DataFrame.to_string(valueList),height=300)
+# elif databaseChoice == "InfluxDB-1.8":
+#     st.title("Access to InfluxDB-1.8")
+#     userID = st.sidebar.text_input("User Name",value="iotuser")
+#     userPassword = st.sidebar.text_input("Password",value="iot12345",type="password")
+#     #selectedDB = st.text_input("Database",value="iot")
+#     hostAddress = st.sidebar.text_input("Host",value='112.157.171.74')
+#     port = st.sidebar.text_input("Port", value = "38086")
+#     #dbName =st.text_input("Database",value="homeassistant")
+#     connectOK=st.sidebar.button("Connect")
+#     con = InfluxDBClient(host=hostAddress,port=port,username=userID,password=userPassword)
+#     dbCategoryTemp = con.query("show databases")
+#     temp = list(dbCategoryTemp.get_points())
+#     #st.write(list(temp[2].values()))
+#     #st.write(len(temp))
+#     dummy = []
+#     for i in range(len(temp)):
+#         dummy.append(list(temp[i].values()))
+#         #st.write(dummy)
+#     dummy1 = np.array(dummy)
+#     finalList = dummy1.flatten()
+#     #dbCategory = pd.DataFrame(list(dbCategoryTemp))
+#     #dbName = st.selectbox("Database", dbCategory)
+#     dbName = st.selectbox("Database", finalList)
+#     con.switch_database(dbName)
+#     measureCategoryTemp = con.query("show measurements")
+#     temp = list(measureCategoryTemp.get_points())
+#     #st.write(list(temp[2].values()))
+#     #st.write(len(temp))
+#     dummy = []
+#     for i in range(len(temp)):
+#         dummy.append(list(temp[i].values()))
+#         #st.write(dummy)
+#     dummy1 = np.array(dummy)
+#     finalList = dummy1.flatten()
+#     measureName = st.selectbox("Measurements", finalList)
+#     sensorValue = con.query('select time,entity_id,value from "{}" order by time desc limit 100'.format(measureName))
+#     temp = list(sensorValue.get_points())
+#     valueList = pd.DataFrame(temp)
+#     st.text_area("Query Result",pd.DataFrame.to_string(valueList),height=300)
     
 
 
